@@ -1,0 +1,187 @@
+<!-- ******************************************************
+***********************************************************
+     * @abstract   两端对齐，宽度自适应，个数自适应 / 个数固定
+     * @author     kico-yu
+     * @email      kicoyu@126.com
+     * @time       2017-09-20
+***********************************************************
+******************************************************** -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>Document</title>
+
+  <style type="text/css">
+    body {
+      background: rgba(0, 0, 0, .6);
+    }
+    .lable-ul {
+      margin: 100px auto;
+      width: 350px;
+      border-radius: 10px;
+      height: 470px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .label-ul-content {
+      padding: 20px 15px 0;
+      height: 470px;
+      overflow-y: auto;
+    }
+
+    .title {
+      font-size: 16px;
+      line-height: 1;
+      border-left: 4px solid #f8c84f;
+      font-weight: normal;
+      margin: 0;
+      margin-bottom: 20px;
+      padding: 0;
+      padding-left: 10px;
+    }
+
+    .label-ul-content ul {
+      margin: 0;
+      padding: 0;
+      margin-bottom: 20px;
+      overflow: hidden;
+      padding-top: 1px;
+      list-style:none;
+    }
+
+    .label-ul-content ul li {
+      border: 1px solid #d4d4d4;   /* 必须 */
+      text-align: center;            /* 必须 */
+      margin: 0 10px 10px 0;
+      display: inline-block;
+      height: 30px;
+      line-height: 28px;
+      font-size: 13px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="lable-ul">
+    <div class="label-ul-content">
+      <h1 class="title">类型案例</h1>
+      <ul id="fromList">
+        <li>全部</li>
+        <li>托福</li>
+        <li>雅思</li>
+        <li>SAT</li>
+        <li>GRE</li>
+        <li>GMAT</li>
+        <li>T-J</li>
+        <li>精英计划</li>
+        <li>SSAT</li>
+        <li>A-LEVEL</li>
+        <li>其他</li>
+      </ul>
+      <h1 class="title">留学国家</h1>
+      <ul id="countryList">
+        <li>全部</li>
+        <li>美国</li>
+        <li>加拿大</li>
+        <li>英国</li>
+        <li>澳洲及新西兰</li>
+        <li>欧洲及其他国家</li>
+        <li>亚洲国家及地区</li>
+      </ul>
+      <h1 class="title">留学阶段</h1>
+      <ul id="studyList">
+        <li>全部</li>
+        <li>小学</li>
+        <li>初中</li>
+        <li>高中</li>
+        <li>预科生</li>
+        <li>本科</li>
+        <li>研究生</li>
+        <li>博士生</li>
+      </ul>
+      <h1 class="title">城市选择</h1>
+      <ul id="caseList">
+        <li>全部</li>
+        <li>武汉</li>
+        <li>上海</li>
+        <li>呼和浩特</li>
+        <li>长沙</li>
+        <li>秦皇岛</li>
+        <li>烟台</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    /**
+     * 
+     * @func       tagsAlign
+     * @author     kico-yu
+     * @email      kicoyu@126.com
+     * @time       2017-09-20
+     * @params     el -- 对应的ul元素的ID, space -- 两个tag之间的间距, cols -- 需要的固定列数，可以不传，不传自适应
+     * @discussion 实现个数的自适应宽度元素，每行两端对齐
+     * @extend     可以根据使用的框架做相应的调整
+     * 
+     */
+    function tagsAlign(el, cols, space) {
+      document.getElementById(el).style.fontSize = 0;
+      const LI_NUM = document.getElementById(el).getElementsByTagName('li');
+      const SPACE = space || 10;    // 两个tag之间的间距
+      let IS_RUN = 0,
+          MAX_WIDTH = document.getElementById(el).clientWidth,
+          other_Padding = SPACE,
+          IS_OVER = cols ? (cols - 1) : 0;
+      while (LI_NUM.length - IS_RUN > IS_OVER) {
+        let row_width_a = 0,
+            row_width_b = 0,
+            row_padding = 0,
+            row_num = 0,
+            is_NUM = cols ? (cols - 1) : LI_NUM.length - IS_RUN,
+            isCol;
+        for (var i = 0; i < is_NUM; i++) {
+          // 加上2个像素
+          row_width_a += LI_NUM[IS_RUN + i].clientWidth + 2;
+          row_num++;
+          if (!cols && IS_RUN + row_num !== LI_NUM.length) {
+            row_width_b = LI_NUM[IS_RUN + row_num].clientWidth + 2;
+            if (row_width_a + (row_num + 1) * SPACE + row_width_b > MAX_WIDTH / 2 ) break;
+          }
+        }
+        if (cols) {
+          row_width_b = LI_NUM[IS_RUN + row_num].clientWidth + 2;
+          isCol = (MAX_WIDTH - (cols - 1) * SPACE) / (cols - 1) > row_width_b ? cols : (cols - 1);
+          row_padding = (MAX_WIDTH - (cols - 1) * SPACE - row_width_a - row_width_b) / isCol - 1;
+        } else {
+          row_padding = (MAX_WIDTH - (row_num - 1) * SPACE - row_width_a) / row_num - 1;
+        }
+        other_Padding = row_padding / 2;
+        let NUM = cols ? isCol : row_num;
+        for (var n = 0; n < NUM; n++) {
+          LI_NUM[IS_RUN + n].setAttribute('style', 'padding: 0 ' + row_padding / 2 + 'px;');
+        }
+        LI_NUM[IS_RUN + n - 1].setAttribute('style', 'margin-right: 0;padding: 0 ' + row_padding / 2 + 'px;');
+        IS_RUN += NUM;
+      }
+      if (cols && LI_NUM.length > IS_RUN) {
+        for ( let j = IS_RUN; j < LI_NUM.length; j++) {
+          LI_NUM[j].setAttribute('style', 'padding: 0 ' + other_Padding + 'px;');
+        }
+      }
+    }
+
+    tagsAlign('fromList');
+    tagsAlign('studyList', 4);
+    tagsAlign('caseList', 3);
+    tagsAlign('countryList');
+  </script>
+
+</body>
+
+</html>
